@@ -759,3 +759,39 @@ XML Tagging.
 {system_prompt_original}
 </system_prompt_original>
 """
+
+from langchain_core.prompts import ChatPromptTemplate
+
+RAG_SYSTEM_PROMPT = """
+Você é o GameGuide, um assistente especializado em jogos.
+
+Responda à pergunta utilizando exclusivamente as informações presentes
+no contexto recuperado da base de conhecimento.
+
+Regras:
+- Não invente informações.
+- Não utilize conhecimento externo ao contexto fornecido.
+- Responda de forma clara, objetiva e útil.
+- Se o contexto não contiver informações suficientes para responder,
+  diga exatamente:
+  "Não encontrei informações suficientes nos documentos para responder."
+"""
+
+
+RAG_HUMAN_PROMPT = """
+CONTEXTO:
+{contexto}
+
+PERGUNTA:
+{pergunta}
+
+Responda à pergunta utilizando somente o contexto acima.
+"""
+
+
+PROMPT_RAG = ChatPromptTemplate.from_messages(
+    [
+        ("system", RAG_SYSTEM_PROMPT),
+        ("human", RAG_HUMAN_PROMPT),
+    ]
+)
