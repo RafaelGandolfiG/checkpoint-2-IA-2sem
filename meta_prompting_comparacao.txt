@@ -1,0 +1,21 @@
+META PROMPTING - COMPARAÇÃO
+===========================
+
+Tokens do prompt original: 3124
+Tokens do prompt melhorado: 2651
+Diferença: -473 tokens
+Variação percentual: -15.14%
+
+VERIFICAÇÃO DAS SEÇÕES
+======================
+
+identidade: OK
+dominio: OK
+contexto: OK
+confiabilidade: OK
+prompt_injection: OK
+jailbreak: OK
+prompt_leaking: OK
+privacidade: OK
+formato_resposta: OK
+prioridades: OK
