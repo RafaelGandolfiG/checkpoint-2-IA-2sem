@@ -68,41 +68,341 @@ JOGOS_RAG = {
 
 def eh_contexto_pessoal(mensagem):
     """
-    Detecta mensagens nas quais o usuário fornece
-    informações pessoais úteis para a memória.
-
-    Exemplos:
-
-    Meu nome é Rafael.
-    Eu prefiro RPG.
-    Gosto de jogos difíceis.
-    Minha plataforma é PC.
+    Identifica mensagens em que o usuário fornece
+    informações pessoais úteis para personalizar
+    futuras conversas sobre games.
     """
 
     texto = mensagem.lower().strip()
 
-    prefixos = [
+    prefixos_permitidos = [
+        # ====================================================
+        # NOME
+        # ====================================================
         "meu nome é ",
         "meu nome e ",
         "me chamo ",
+        "eu me chamo ",
         "pode me chamar de ",
+        "pode chamar de ",
+        "me chama de ",
+        "me chame de ",
+        "quero ser chamado de ",
+        "gosto de ser chamado de ",
+        "eu sou ",
+        "sou ",
+        # ====================================================
+        # JOGOS QUE GOSTA
+        # ====================================================
         "eu gosto de ",
-        "eu gosto mais de ",
         "gosto de ",
+        "eu gosto muito de ",
+        "gosto muito de ",
+        "eu curto ",
+        "curto ",
+        "eu curto muito ",
+        "curto muito ",
+        "eu adoro ",
+        "adoro ",
+        "eu amo ",
+        "amo ",
+        "sou fã de ",
+        "sou fa de ",
+        "eu sou fã de ",
+        "eu sou fa de ",
+        "um jogo que eu gosto é ",
+        "um jogo que eu gosto e ",
+        "um jogo que gosto é ",
+        "um jogo que gosto e ",
+        "meu jogo favorito é ",
+        "meu jogo favorito e ",
+        "o meu jogo favorito é ",
+        "o meu jogo favorito e ",
+        "meu game favorito é ",
+        "meu game favorito e ",
+        "meus jogos favoritos são ",
+        "meus jogos favoritos sao ",
+        "os jogos que eu gosto são ",
+        "os jogos que eu gosto sao ",
+        "os jogos que mais gosto são ",
+        "os jogos que mais gosto sao ",
+        # ====================================================
+        # PREFERÊNCIA
+        # ====================================================
         "eu prefiro ",
         "prefiro ",
-        "minha plataforma é ",
-        "minha plataforma e ",
-        "eu jogo no ",
-        "jogo no ",
+        "eu tenho preferência por ",
+        "eu tenho preferencia por ",
+        "tenho preferência por ",
+        "tenho preferencia por ",
+        "minha preferência é ",
+        "minha preferencia é ",
+        "minha preferencia e ",
+        "a minha preferência é ",
+        "a minha preferencia é ",
+        "a minha preferencia e ",
+        "eu tenho preferência por jogos ",
+        "eu tenho preferencia por jogos ",
+        "tenho preferência por jogos ",
+        "tenho preferencia por jogos ",
+        # ====================================================
+        # GÊNERO DE JOGO
+        # ====================================================
         "meu gênero favorito é ",
         "meu genero favorito é ",
-        "meu gênero favorito e ",
         "meu genero favorito e ",
+        "o meu gênero favorito é ",
+        "o meu genero favorito é ",
+        "o meu genero favorito e ",
+        "meu gênero preferido é ",
+        "meu genero preferido é ",
+        "meu genero preferido e ",
+        "meu tipo de jogo favorito é ",
+        "meu tipo de jogo favorito e ",
+        "meu tipo de jogo preferido é ",
+        "meu tipo de jogo preferido e ",
+        "eu gosto do gênero ",
+        "eu gosto do genero ",
+        "gosto do gênero ",
+        "gosto do genero ",
+        "eu prefiro o gênero ",
+        "eu prefiro o genero ",
+        "prefiro o gênero ",
+        "prefiro o genero ",
+        "eu gosto de jogos de ",
+        "gosto de jogos de ",
+        "eu prefiro jogos de ",
+        "prefiro jogos de ",
+        # ====================================================
+        # PLATAFORMA
+        # ====================================================
+        "eu jogo no ",
+        "jogo no ",
+        "eu jogo na ",
+        "jogo na ",
+        "eu jogo em ",
+        "jogo em ",
+        "eu costumo jogar no ",
+        "costumo jogar no ",
+        "eu costumo jogar na ",
+        "costumo jogar na ",
+        "eu costumo jogar em ",
+        "costumo jogar em ",
+        "minha plataforma é ",
+        "minha plataforma e ",
+        "minha plataforma principal é ",
+        "minha plataforma principal e ",
+        "a minha plataforma é ",
+        "a minha plataforma e ",
+        "a minha plataforma principal é ",
+        "a minha plataforma principal e ",
+        "minha plataforma favorita é ",
+        "minha plataforma favorita e ",
+        "minha plataforma preferida é ",
+        "minha plataforma preferida e ",
+        "eu uso pc ",
+        "uso pc ",
+        "eu uso playstation ",
+        "uso playstation ",
+        "eu uso xbox ",
+        "uso xbox ",
+        "eu tenho um pc ",
+        "tenho um pc ",
+        "eu tenho um playstation ",
+        "tenho um playstation ",
+        "eu tenho um xbox ",
+        "tenho um xbox ",
+        # ====================================================
+        # DIFICULDADE
+        # ====================================================
+        "eu gosto de jogos difíceis",
+        "eu gosto de jogos dificeis",
+        "gosto de jogos difíceis",
+        "gosto de jogos dificeis",
+        "eu prefiro jogos difíceis",
+        "eu prefiro jogos dificeis",
+        "prefiro jogos difíceis",
+        "prefiro jogos dificeis",
+        "eu gosto de jogos fáceis",
+        "eu gosto de jogos faceis",
+        "gosto de jogos fáceis",
+        "gosto de jogos faceis",
+        "eu prefiro jogos fáceis",
+        "eu prefiro jogos faceis",
+        "prefiro jogos fáceis",
+        "prefiro jogos faceis",
+        "eu gosto de jogos desafiadores",
+        "gosto de jogos desafiadores",
+        "eu prefiro jogos desafiadores",
+        "prefiro jogos desafiadores",
+        "eu gosto de dificuldade alta",
+        "gosto de dificuldade alta",
+        "eu prefiro dificuldade alta",
+        "prefiro dificuldade alta",
+        "eu gosto de dificuldade baixa",
+        "gosto de dificuldade baixa",
+        "eu prefiro dificuldade baixa",
+        "prefiro dificuldade baixa",
+        "minha dificuldade favorita é ",
+        "minha dificuldade favorita e ",
+        "minha dificuldade preferida é ",
+        "minha dificuldade preferida e ",
+        # ====================================================
+        # SINGLE-PLAYER / MULTIPLAYER
+        # ====================================================
+        "eu gosto de single-player",
+        "eu gosto de single player",
+        "gosto de single-player",
+        "gosto de single player",
+        "eu prefiro single-player",
+        "eu prefiro single player",
+        "prefiro single-player",
+        "prefiro single player",
+        "eu gosto de multiplayer",
+        "gosto de multiplayer",
+        "eu prefiro multiplayer",
+        "prefiro multiplayer",
+        "eu gosto de jogar sozinho",
+        "gosto de jogar sozinho",
+        "eu prefiro jogar sozinho",
+        "prefiro jogar sozinho",
+        "eu gosto de jogar com amigos",
+        "gosto de jogar com amigos",
+        "eu prefiro jogar com amigos",
+        "prefiro jogar com amigos",
+        "eu gosto de jogar online",
+        "gosto de jogar online",
+        "eu prefiro jogar online",
+        "prefiro jogar online",
+        # ====================================================
+        # ESTILO DE JOGO
+        # ====================================================
+        "meu estilo de jogo é ",
+        "meu estilo de jogo e ",
+        "o meu estilo de jogo é ",
+        "o meu estilo de jogo e ",
+        "meu estilo favorito é ",
+        "meu estilo favorito e ",
+        "meu estilo preferido é ",
+        "meu estilo preferido e ",
+        "eu gosto de explorar ",
+        "gosto de explorar ",
+        "eu gosto de exploração ",
+        "eu gosto de exploracao ",
+        "gosto de exploração ",
+        "gosto de exploracao ",
+        "eu gosto de combate ",
+        "gosto de combate ",
+        "eu gosto de história ",
+        "eu gosto de historia ",
+        "gosto de história ",
+        "gosto de historia ",
+        "eu gosto de jogos com história ",
+        "eu gosto de jogos com historia ",
+        "gosto de jogos com história ",
+        "gosto de jogos com historia ",
+        "eu gosto de mundo aberto ",
+        "gosto de mundo aberto ",
+        "eu prefiro mundo aberto ",
+        "prefiro mundo aberto ",
+        "eu gosto de jogos lineares ",
+        "gosto de jogos lineares ",
+        "eu prefiro jogos lineares ",
+        "prefiro jogos lineares ",
+        # ====================================================
+        # NÃO GOSTA
+        # ====================================================
+        "eu não gosto de ",
+        "eu nao gosto de ",
+        "não gosto de ",
+        "nao gosto de ",
+        "eu não curto ",
+        "eu nao curto ",
+        "não curto ",
+        "nao curto ",
+        "eu odeio ",
+        "odeio ",
+        "não sou fã de ",
+        "nao sou fã de ",
+        "não sou fa de ",
+        "nao sou fa de ",
+        "eu não sou fã de ",
+        "eu nao sou fã de ",
+        "eu não sou fa de ",
+        "eu nao sou fa de ",
+        "eu evito ",
+        "evito ",
+        # ====================================================
+        # CARACTERÍSTICAS QUE PROCURA
+        # ====================================================
+        "eu gosto quando o jogo ",
+        "gosto quando o jogo ",
+        "eu prefiro quando o jogo ",
+        "prefiro quando o jogo ",
+        "eu gosto de jogos que ",
+        "gosto de jogos que ",
+        "eu prefiro jogos que ",
+        "prefiro jogos que ",
+        "eu gosto de jogos com ",
+        "gosto de jogos com ",
+        "eu prefiro jogos com ",
+        "prefiro jogos com ",
+        "para mim um bom jogo ",
+        "pra mim um bom jogo ",
+        "para mim o mais importante é ",
+        "para mim o mais importante e ",
+        "pra mim o mais importante é ",
+        "pra mim o mais importante e ",
+        # ====================================================
+        # INFORMAÇÕES SOBRE O JOGADOR
+        # ====================================================
+        "eu sou jogador de ",
+        "sou jogador de ",
+        "eu sou jogador casual",
+        "sou jogador casual",
+        "eu sou jogador competitivo",
+        "sou jogador competitivo",
+        "eu jogo bastante ",
+        "jogo bastante ",
+        "eu jogo muito ",
+        "jogo muito ",
+        "eu jogo pouco ",
+        "jogo pouco ",
+        "normalmente eu jogo ",
+        "normalmente jogo ",
+        "geralmente eu jogo ",
+        "geralmente jogo ",
+        "costumo jogar ",
+        "eu costumo jogar ",
+        # ====================================================
+        # FRASES DE MEMÓRIA EXPLÍCITA
+        # ====================================================
+        "lembre que ",
+        "lembra que ",
+        "lembre-se que ",
+        "lembre-se de que ",
+        "quero que você lembre que ",
+        "quero que voce lembre que ",
+        "quero que você se lembre que ",
+        "quero que voce se lembre que ",
+        "guarde que ",
+        "guarda que ",
+        "anote que ",
+        "anota que ",
+        "para você saber ",
+        "para voce saber ",
+        "pra você saber ",
+        "pra voce saber ",
+        "só para você saber ",
+        "so para voce saber ",
+        "só pra você saber ",
+        "so pra voce saber ",
+        "uma coisa sobre mim é ",
+        "uma coisa sobre mim e ",
+        "sobre mim ",
     ]
 
-    for prefixo in prefixos:
-
+    for prefixo in prefixos_permitidos:
         if texto.startswith(prefixo):
             return True
 
@@ -119,41 +419,241 @@ def eh_consulta_memoria(mensagem):
     Detecta perguntas relacionadas a informações
     fornecidas anteriormente pelo usuário.
 
-    Essas perguntas devem utilizar o chat com memória
-    e não o RAG.
+    Essas perguntas utilizam o chat com memória
+    em vez do RAG.
     """
 
     texto = mensagem.lower().strip()
 
     expressoes = [
+        # ====================================================
+        # NOME / IDENTIDADE
+        # ====================================================
         "qual é meu nome",
         "qual e meu nome",
+        "qual é o meu nome",
+        "qual e o meu nome",
         "como eu me chamo",
+        "como me chamo",
+        "quem sou eu",
+        "quem eu sou",
+        "você sabe meu nome",
+        "voce sabe meu nome",
+        "você sabe o meu nome",
+        "voce sabe o meu nome",
         "você lembra meu nome",
         "voce lembra meu nome",
+        "você lembra o meu nome",
+        "voce lembra o meu nome",
         "lembra meu nome",
+        "lembra o meu nome",
+        "você lembra como eu me chamo",
+        "voce lembra como eu me chamo",
+        "me diga meu nome",
+        "me diga o meu nome",
+        "fala meu nome",
+        "fale meu nome",
+        # ====================================================
+        # GOSTOS
+        # ====================================================
         "o que eu gosto",
         "do que eu gosto",
+        "que jogo eu gosto",
+        "qual jogo eu gosto",
+        "quais jogos eu gosto",
+        "que jogos eu gosto",
+        "que tipo de jogo eu gosto",
+        "qual tipo de jogo eu gosto",
+        "quais tipos de jogos eu gosto",
+        "qual gênero eu gosto",
+        "qual genero eu gosto",
+        "quais gêneros eu gosto",
+        "quais generos eu gosto",
+        "você sabe do que eu gosto",
+        "voce sabe do que eu gosto",
+        "você lembra do que eu gosto",
+        "voce lembra do que eu gosto",
+        "lembra do que eu gosto",
+        "lembra que jogo eu gosto",
+        "lembra quais jogos eu gosto",
+        "me diga do que eu gosto",
+        "me diga quais jogos eu gosto",
+        # ====================================================
+        # PREFERÊNCIAS
+        # ====================================================
         "o que eu prefiro",
         "qual jogo eu prefiro",
-        "qual tipo de jogo eu gosto",
+        "que jogo eu prefiro",
+        "quais jogos eu prefiro",
+        "que jogos eu prefiro",
         "qual tipo de jogo eu prefiro",
+        "que tipo de jogo eu prefiro",
+        "qual gênero eu prefiro",
+        "qual genero eu prefiro",
         "quais são minhas preferências",
         "quais sao minhas preferencias",
+        "quais são as minhas preferências",
+        "quais sao as minhas preferencias",
         "qual é minha preferência",
         "qual e minha preferencia",
+        "qual é a minha preferência",
+        "qual e a minha preferencia",
+        "você sabe minhas preferências",
+        "voce sabe minhas preferencias",
+        "você lembra minhas preferências",
+        "voce lembra minhas preferencias",
+        "lembra das minhas preferências",
+        "lembra das minhas preferencias",
+        "me diga minhas preferências",
+        "me diga minhas preferencias",
+        # ====================================================
+        # PLATAFORMA
+        # ====================================================
         "qual minha plataforma",
+        "qual é minha plataforma",
+        "qual e minha plataforma",
+        "qual é a minha plataforma",
+        "qual e a minha plataforma",
         "em qual plataforma eu jogo",
+        "em que plataforma eu jogo",
+        "qual plataforma eu uso",
+        "que plataforma eu uso",
+        "onde eu jogo",
+        "eu jogo onde",
+        "você sabe onde eu jogo",
+        "voce sabe onde eu jogo",
+        "você lembra onde eu jogo",
+        "voce lembra onde eu jogo",
+        "lembra onde eu jogo",
+        "você sabe minha plataforma",
+        "voce sabe minha plataforma",
+        "você lembra minha plataforma",
+        "voce lembra minha plataforma",
+        # ====================================================
+        # DIFICULDADE
+        # ====================================================
+        "qual dificuldade eu gosto",
+        "que dificuldade eu gosto",
+        "eu gosto de jogos difíceis",
+        "eu gosto de jogos dificeis",
+        "eu prefiro jogos difíceis",
+        "eu prefiro jogos dificeis",
+        "eu gosto de jogos fáceis",
+        "eu gosto de jogos faceis",
+        "eu prefiro jogos fáceis",
+        "eu prefiro jogos faceis",
+        "que nível de dificuldade eu gosto",
+        "que nivel de dificuldade eu gosto",
+        "qual nível de dificuldade eu gosto",
+        "qual nivel de dificuldade eu gosto",
+        "você lembra da dificuldade que eu gosto",
+        "voce lembra da dificuldade que eu gosto",
+        # ====================================================
+        # ESTILO DE JOGO
+        # ====================================================
+        "qual estilo de jogo eu gosto",
+        "que estilo de jogo eu gosto",
+        "qual é meu estilo de jogo",
+        "qual e meu estilo de jogo",
+        "qual é o meu estilo de jogo",
+        "qual e o meu estilo de jogo",
+        "eu prefiro single-player",
+        "eu prefiro single player",
+        "eu prefiro multiplayer",
+        "prefiro jogar sozinho",
+        "prefiro jogar com outras pessoas",
+        "você lembra do meu estilo de jogo",
+        "voce lembra do meu estilo de jogo",
+        # ====================================================
+        # INFORMAÇÕES ANTERIORES
+        # ====================================================
+        "o que eu te falei",
+        "o que eu disse",
+        "o que eu falei",
+        "o que eu te disse",
+        "o que eu disse antes",
+        "o que eu falei antes",
+        "o que eu te falei antes",
+        "o que eu te disse antes",
+        "o que você sabe sobre mim",
+        "o que voce sabe sobre mim",
+        "o que você lembra sobre mim",
+        "o que voce lembra sobre mim",
+        "você lembra de mim",
+        "voce lembra de mim",
+        "lembra de mim",
+        "lembra o que eu disse",
+        "lembra o que eu falei",
+        # ====================================================
+        # RECOMENDAÇÕES BASEADAS NA MEMÓRIA
+        # ====================================================
         "considerando minhas preferências",
         "considerando minhas preferencias",
+        "considerando as minhas preferências",
+        "considerando as minhas preferencias",
         "baseado nas minhas preferências",
         "baseado nas minhas preferencias",
+        "baseado nas minhas preferências pessoais",
+        "baseado nas minhas preferencias pessoais",
         "com base nas minhas preferências",
         "com base nas minhas preferencias",
+        "de acordo com minhas preferências",
+        "de acordo com minhas preferencias",
+        "de acordo com as minhas preferências",
+        "de acordo com as minhas preferencias",
+        "baseado no que eu gosto",
+        "com base no que eu gosto",
+        "considerando o que eu gosto",
+        "de acordo com o que eu gosto",
+        "pensando no que eu gosto",
+        "baseado no que eu prefiro",
+        "com base no que eu prefiro",
+        "considerando o que eu prefiro",
+        "baseado no que eu te falei",
+        "baseado no que eu disse",
+        "com base no que eu te falei",
+        "com base no que eu disse",
+        "usando minhas preferências",
+        "usando minhas preferencias",
+        "use minhas preferências",
+        "use minhas preferencias",
+        # ====================================================
+        # RECOMENDAÇÕES PESSOAIS
+        # ====================================================
+        "me recomende baseado no que eu gosto",
+        "me recomende algo baseado no que eu gosto",
+        "me recomende um jogo baseado no que eu gosto",
+        "me recomenda baseado no que eu gosto",
+        "me recomenda um jogo baseado no que eu gosto",
+        "me recomende baseado nas minhas preferências",
+        "me recomende baseado nas minhas preferencias",
+        "me recomende um jogo baseado nas minhas preferências",
+        "me recomende um jogo baseado nas minhas preferencias",
+        "qual jogo você me recomenda baseado no que eu gosto",
+        "qual jogo voce me recomenda baseado no que eu gosto",
+        "qual jogo você recomenda para mim",
+        "qual jogo voce recomenda para mim",
+        "o que você me recomenda",
+        "o que voce me recomenda",
+        "o que você recomenda para mim",
+        "o que voce recomenda para mim",
+        # ====================================================
+        # COMPARAÇÃO COM PREFERÊNCIAS
+        # ====================================================
+        "qual combina mais comigo",
+        "qual jogo combina mais comigo",
+        "que jogo combina mais comigo",
+        "qual seria melhor para mim",
+        "qual jogo seria melhor para mim",
+        "qual é melhor para mim",
+        "qual e melhor para mim",
+        "qual você acha que eu gostaria mais",
+        "qual voce acha que eu gostaria mais",
+        "qual eu gostaria mais",
+        "qual deles eu gostaria mais",
     ]
 
     for expressao in expressoes:
-
         if expressao in texto:
             return True
 
@@ -183,16 +683,16 @@ def identificar_game_rag(nome_jogo):
     nome = nome_jogo.lower().strip()
 
     # --------------------------------------------------------
-    # Correspondência exata primeiro
+    # CORRESPONDÊNCIA EXATA
     # --------------------------------------------------------
 
     if nome in JOGOS_RAG:
         return JOGOS_RAG[nome]
 
     # --------------------------------------------------------
-    # Correspondência parcial
+    # CORRESPONDÊNCIA PARCIAL
     # --------------------------------------------------------
-
+    #
     # Ordenamos do maior nome para o menor.
     #
     # Isso evita que:
@@ -210,7 +710,6 @@ def identificar_game_rag(nome_jogo):
     )
 
     for nome_base, game in jogos_ordenados:
-
         if nome_base in nome:
             return game
 
@@ -237,8 +736,16 @@ def deve_usar_rag(analise):
     tratadas pelo chat com memória.
     """
 
+    # --------------------------------------------------------
+    # PRECISA EXISTIR UM JOGO
+    # --------------------------------------------------------
+
     if analise.jogo_mencionado is None:
         return False
+
+    # --------------------------------------------------------
+    # O JOGO PRECISA ESTAR NA BASE
+    # --------------------------------------------------------
 
     game = identificar_game_rag(analise.jogo_mencionado)
 
@@ -246,7 +753,7 @@ def deve_usar_rag(analise):
         return False
 
     # --------------------------------------------------------
-    # Tipos que normalmente se beneficiam dos documentos
+    # TIPOS QUE NORMALMENTE SE BENEFICIAM DOS DOCUMENTOS
     # --------------------------------------------------------
 
     tipos_rag = [
@@ -258,8 +765,11 @@ def deve_usar_rag(analise):
         return True
 
     # --------------------------------------------------------
+    # COMPARAÇÕES
+    # --------------------------------------------------------
+    #
     # Comparações também podem utilizar documentos
-    # se houver um jogo conhecido na base.
+    # quando existe um jogo conhecido na base.
     # --------------------------------------------------------
 
     if analise.tipo_consulta == "comparacao":
@@ -294,7 +804,6 @@ def formatar_resposta_rag(resultado):
     resposta += "\n\n### Fontes\n"
 
     for fonte in fontes:
-
         source = fonte.get(
             "source",
             "Fonte desconhecida",
@@ -325,6 +834,7 @@ def responder_chat(mensagem):
     - recomendações;
     - preferências;
     - perguntas pessoais;
+    - recuperação de informações da memória;
     - conhecimento geral de games;
     - jogos não presentes nos PDFs.
     """
@@ -376,25 +886,37 @@ def responder(
     mensagem,
     _historico,
 ):
+    """
+    Função principal responsável pelo roteamento
+    das mensagens do GameGuide.
+
+    Ordem utilizada:
+
+    1. valida a mensagem;
+    2. realiza análise estruturada;
+    3. identifica contexto pessoal;
+    4. identifica consultas sobre memória;
+    5. bloqueia assuntos fora de games;
+    6. utiliza RAG quando apropriado;
+    7. utiliza chat geral para os demais casos.
+    """
 
     try:
 
         # ====================================================
-        # VALIDAR MENSAGEM
+        # 1. VALIDAR MENSAGEM
         # ====================================================
 
         if not mensagem:
-
             return "Digite uma mensagem para " "conversar com o GameGuide."
 
         mensagem = mensagem.strip()
 
         if not mensagem:
-
             return "Digite uma mensagem para " "conversar com o GameGuide."
 
         # ====================================================
-        # ANÁLISE ESTRUTURADA
+        # 2. ANÁLISE ESTRUTURADA
         # ====================================================
 
         analise = analisar_consulta(mensagem)
@@ -420,7 +942,7 @@ def responder(
         print("==========================================\n")
 
         # ====================================================
-        # IDENTIFICAR TIPOS ESPECIAIS
+        # 3. IDENTIFICAR TIPOS ESPECIAIS
         # ====================================================
 
         contexto_pessoal = eh_contexto_pessoal(mensagem)
@@ -428,7 +950,15 @@ def responder(
         consulta_memoria = eh_consulta_memoria(mensagem)
 
         # ====================================================
-        # 1. CONTEXTO PESSOAL
+        # 4. CONTEXTO PESSOAL
+        # ====================================================
+        #
+        # Essa verificação ocorre antes do domínio porque:
+        #
+        # "Meu nome é Rafael."
+        #
+        # não é uma pergunta sobre games, mas é uma
+        # informação válida para a memória.
         # ====================================================
 
         if contexto_pessoal:
@@ -438,7 +968,18 @@ def responder(
             return responder_chat(mensagem)
 
         # ====================================================
-        # 2. CONSULTA SOBRE MEMÓRIA
+        # 5. CONSULTA SOBRE MEMÓRIA
+        # ====================================================
+        #
+        # Também precisa ocorrer antes da verificação
+        # de domínio.
+        #
+        # Exemplo:
+        #
+        # "Qual é o meu nome?"
+        #
+        # A análise pode considerar isso fora do domínio
+        # de games, mas o chatbot deve consultar a memória.
         # ====================================================
 
         if consulta_memoria:
@@ -448,7 +989,7 @@ def responder(
             return responder_chat(mensagem)
 
         # ====================================================
-        # 3. FORA DO DOMÍNIO
+        # 6. FORA DO DOMÍNIO
         # ====================================================
 
         if not analise.dentro_dominio:
@@ -458,7 +999,7 @@ def responder(
             return MENSAGEM_FORA_DOMINIO
 
         # ====================================================
-        # 4. VERIFICAR RAG
+        # 7. VERIFICAR RAG
         # ====================================================
 
         if deve_usar_rag(analise):
@@ -471,7 +1012,22 @@ def responder(
             )
 
         # ====================================================
-        # 5. CHAT GERAL DE GAMES
+        # 8. CHAT GERAL DE GAMES
+        # ====================================================
+        #
+        # Se chegou até aqui:
+        #
+        # - está dentro do domínio de games;
+        # - não precisa obrigatoriamente do RAG;
+        # - não é uma consulta pessoal especial.
+        #
+        # Exemplos:
+        #
+        # "O que é um RPG?"
+        #
+        # "Me recomende um RPG difícil."
+        #
+        # "Como funciona Minecraft?"
         # ====================================================
 
         return responder_chat(mensagem)
@@ -507,6 +1063,9 @@ def responder(
 
 
 def limpar_conversa():
+    """
+    Limpa a memória conversacional do GameGuide.
+    """
 
     try:
 
@@ -524,7 +1083,6 @@ def limpar_conversa():
 # ============================================================
 # INTERFACE GRADIO
 # ============================================================
-
 
 interface = gr.ChatInterface(
     fn=responder,
@@ -551,7 +1109,6 @@ interface = gr.ChatInterface(
 # ============================================================
 # EXECUÇÃO
 # ============================================================
-
 
 if __name__ == "__main__":
 
