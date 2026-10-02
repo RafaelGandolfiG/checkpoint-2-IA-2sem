@@ -73,7 +73,7 @@ def criar_embeddings():
 if __name__ == "__main__":
     embeddings = criar_embeddings()
 
-    texto_teste = "O combate de God of War utiliza " "o Machado Leviatã."
+    texto_teste = "Horizon Forbidden West está disponível para PC."
 
     vetor = embeddings.embed_query(texto_teste)
 

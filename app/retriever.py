@@ -255,9 +255,9 @@ if __name__ == "__main__":
     testes = [
         {
             "pergunta": (
-                "Quais são os requisitos para jogar " "God of War Ragnarök no PC?"
+                "Quais são os requisitos para jogar " "Horizon Forbidden West no PC?"
             ),
-            "game": "god_of_war_ragnarok",
+            "game": "horizon_forbidden_west",
         },
         {
             "pergunta": (
@@ -279,6 +279,9 @@ if __name__ == "__main__":
     # ============================================================
 
     testar_metadata_filtering(
-        pergunta="Quais são os requisitos para jogar no PC?",
-        game="god_of_war_ragnarok",
+        pergunta=(
+            "Quais são os requisitos de sistema de " "Red Dead Redemption 2 para PC?"
+        ),
+        game="red_dead_redemption_2",
     )
+    

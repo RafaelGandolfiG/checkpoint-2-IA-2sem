@@ -23,11 +23,11 @@ def identificar_jogo(caminho):
 
     Exemplo:
 
-    data/god_of_war_ragnarok/arquivo.pdf
+    data/horizon_forbidden_west/arquivo.pdf
 
     retorna:
 
-    god_of_war_ragnarok
+    horizon_forbidden_west
     """
 
     try:

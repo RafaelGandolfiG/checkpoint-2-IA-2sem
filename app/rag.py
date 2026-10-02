@@ -196,41 +196,34 @@ def buscar_parent(
 # ============================================================
 # RAG FINAL
 #
-# A avaliação com RAGAS apresentou desempenho muito próximo
-# entre o Parent Retriever e a configuração 1000/100.
-#
-# Resultados:
+# A avaliação com RAGAS comparou três configurações:
 #
 # Parent Retriever:
-# Faithfulness      = 0.9867
-# Answer Relevancy  = 0.7865
-# Score geral       = 0.8866
+# Faithfulness      = 1.0000
+# Answer Relevancy  = 0.7755
+# Score geral       = 0.8878
 #
 # 1000/100:
-# Faithfulness      = 0.9818
-# Answer Relevancy  = 0.7859
-# Score geral       = 0.8838
+# Faithfulness      = 1.0000
+# Answer Relevancy  = 0.5837
+# Score geral       = 0.7918
 #
 # 500/50:
 # Faithfulness      = 0.8000
-# Answer Relevancy  = 0.7415
-# Score geral       = 0.7708
+# Answer Relevancy  = 0.5859
+# Score geral       = 0.6930
 #
-# Apesar de o Parent Retriever apresentar o maior score geral,
-# a diferença para 1000/100 foi de apenas 0.0028.
-#
-# A configuração 1000/100 foi mantida como pipeline final por
-# apresentar desempenho praticamente equivalente com uma
-# arquitetura mais simples para a aplicação.
+# O Parent Retriever apresentou o maior score geral
+# e foi selecionado como pipeline RAG final.
 # ============================================================
+
 
 def buscar(
     consulta,
     game=None,
 ):
-    return buscar_vectorstore(
+    return buscar_parent(
         consulta=consulta,
-        collection_name=COLLECTION_1000,
         game=game,
     )
 
@@ -264,9 +257,9 @@ def mostrar_resultado(
 
 
 if __name__ == "__main__":
-    pergunta = "Como funciona o combate em " "God of War Ragnarök?"
+    pergunta = "O que é a expansão Burning Shores de " "Horizon Forbidden West?"
 
-    game = "god_of_war_ragnarok"
+    game = "horizon_forbidden_west"
 
     print("\nPERGUNTA:")
     print(pergunta)
@@ -320,8 +313,7 @@ if __name__ == "__main__":
     # ========================================================
     # CONFIGURAÇÃO FINAL
     #
-    # Usa automaticamente a configuração vencedora:
-    # 1000/100
+    # A aplicação utiliza a configuração 1000/100.
     # ========================================================
 
     resultado_final = buscar(

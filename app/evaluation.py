@@ -30,14 +30,14 @@ ARQUIVO_RESULTADOS = OUTPUT_DIR / "ragas_resultados.csv"
 
 PERGUNTAS_AVALIACAO = [
     {
-        "pergunta": ("Como funciona o combate em " "God of War Ragnarök?"),
-        "game": "god_of_war_ragnarok",
+        "pergunta": (
+            "Quais são os requisitos para jogar " "Horizon Forbidden West no PC?"
+        ),
+        "game": "horizon_forbidden_west",
     },
     {
-        "pergunta": (
-            "Quais são os requisitos para jogar " "God of War Ragnarök no PC?"
-        ),
-        "game": "god_of_war_ragnarok",
+        "pergunta": ("O que é a expansão Burning Shores de " "Horizon Forbidden West?"),
+        "game": "horizon_forbidden_west",
     },
     {
         "pergunta": (
@@ -53,8 +53,11 @@ PERGUNTAS_AVALIACAO = [
         "game": "red_dead_redemption_2",
     },
     {
-        "pergunta": ("O que é a expansão Burning Shores de " "Horizon Forbidden West?"),
-        "game": "horizon_forbidden_west",
+        "pergunta": (
+            "Como os dados salvos e os troféus funcionam "
+            "em Resident Evil Revelations no PS3?"
+        ),
+        "game": "residedent_evil_ps3",
     },
 ]
 

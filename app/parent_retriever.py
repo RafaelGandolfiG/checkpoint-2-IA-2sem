@@ -378,12 +378,12 @@ def limpar_parent_retriever():
     if os.path.isdir(PARENT_DB_DIR):
         shutil.rmtree(PARENT_DB_DIR)
 
-        print(f"Removido: {PARENT_DB_DIR}")
+        print(f"Removido: " f"{PARENT_DB_DIR}")
 
     if os.path.isdir(PARENT_DOCSTORE_DIR):
         shutil.rmtree(PARENT_DOCSTORE_DIR)
 
-        print(f"Removido: {PARENT_DOCSTORE_DIR}")
+        print(f"Removido: " f"{PARENT_DOCSTORE_DIR}")
 
 
 # ============================================================
@@ -395,9 +395,9 @@ if __name__ == "__main__":
     testes = [
         {
             "pergunta": (
-                "Quais são os requisitos para jogar " "God of War Ragnarök no PC?"
+                "Quais são os requisitos para jogar " "Horizon Forbidden West no PC?"
             ),
-            "game": "god_of_war_ragnarok",
+            "game": "horizon_forbidden_west",
         },
         {
             "pergunta": (

@@ -135,9 +135,9 @@ if __name__ == "__main__":
     from app.retriever import recuperar_documentos
     from app.vectorstore import COLLECTION_1000
 
-    pergunta = "Quais são os requisitos para jogar " "God of War Ragnarök no PC?"
+    pergunta = "Quais são os requisitos para jogar " "Horizon Forbidden West no PC?"
 
-    game = "god_of_war_ragnarok"
+    game = "horizon_forbidden_west"
 
     print("\nPergunta:")
     print(pergunta)

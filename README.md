@@ -2427,13 +2427,13 @@ Exemplos de identificadores utilizados:
 
 ``` text
 
-god_of_war_ragnarok
+horizon_forbidden_west
 
 jedi_fallen_order
 
 red_dead_redemption_2
 
-horizon_forbidden_west
+residedent_evil_ps3
 ```
 
 Cada documento preserva metadados importantes:
@@ -3051,9 +3051,9 @@ Médias finais:
 
   500/50                     0.8000
 
-  1000/100                   0.9818
+  1000/100                   1.0000
 
-  Parent Retriever           0.9867
+  Parent Retriever           1.0000
 
 # 56. Answer Relevancy
 
@@ -3072,11 +3072,11 @@ Médias finais:
 
   ------------------ ------------------
 
-  500/50                         0.7415
+  500/50                         0.5859
 
-  1000/100                       0.7859
+  1000/100                       0.5837
 
-  Parent Retriever               0.7865
+  Parent Retriever               0.7755
 
 # 57. Dataset de avaliação
 
@@ -3084,15 +3084,16 @@ Foram utilizadas cinco perguntas:
 
 ``` text
 
-1\. Como funciona o combate em God of War Ragnarök?
+1. Quais são os requisitos para jogar Horizon Forbidden West no PC?
 
-2\. Quais são os requisitos para jogar God of War Ragnarök no PC?
+2. O que é a expansão Burning Shores de Horizon Forbidden West?
 
-3\. Quais recursos de acessibilidade existem em Star Wars Jedi: Fallen Order?
+3. Quais recursos de acessibilidade existem em Star Wars Jedi: Fallen Order?
 
-4\. Quais são os requisitos de sistema de Red Dead Redemption 2 para PC?
+4. Quais são os requisitos de sistema de Red Dead Redemption 2 para PC?
 
-5\. O que é a expansão Burning Shores de Horizon Forbidden West?
+5. Como os dados salvos e os troféus funcionam em Resident Evil Revelations no PS3?
+
 ```
 
 Como cada pergunta foi executada em três configurações:
@@ -3100,93 +3101,56 @@ Como cada pergunta foi executada em três configurações:
 ``` text
 
 5 × 3 = 15 avaliações
+
 ```
 
 # 58. Resultados finais
 
-  Configuração         Faithfulness   Answer Relevancy   Score geral
+A execução mais recente do RAGAS produziu as seguintes médias:
 
-  ------------------ -------------- ------------------ -------------
-
-  Parent Retriever           0.9867             0.7865        0.8866
-
-  1000/100                   0.9818             0.7859        0.8838
-
-  500/50                     0.8000             0.7415        0.7708
+| Configuração | Faithfulness | Answer Relevancy | Score geral |
+|---|---:|---:|---:|
+| Parent Retriever | 1.0000 | 0.7755 | 0.8878 |
+| 1000/100 | 1.0000 | 0.5837 | 0.7918 |
+| 500/50 | 0.8000 | 0.5859 | 0.6930 |
 
 O score geral utilizado na análise é:
 
 ``` text
-
 (faithfulness + answer_relevancy) / 2
 ```
 
 Ranking:
 
 ``` text
-
-1º Parent Retriever 0.8866
-
-2º 1000/100         0.8838
-
-3º 500/50           0.7708
+1º Parent Retriever 0.8878
+2º 1000/100         0.7918
+3º 500/50           0.6930
 ```
 
-Por isso, \*\*\*\*Parent Retriever foi identificado como a configuração com maior score geral no experimento\*\*\*\*.
+Por isso, **Parent Retriever foi identificado como a configuração com maior score geral no experimento**.
 
-A escolha é válida para o experimento realizado; ela não significa que
+A escolha é válida para o conjunto de documentos, perguntas e execução avaliados; as métricas do RAGAS não devem ser interpretadas como medidas absolutas ou universais.
 
-1000/100 seja universalmente superior para qualquer sistema RAG.
+# 59. Casos de falha analisados
 
-# 59. Caso de falha analisado
+A execução mais recente mostrou alguns casos de `Answer Relevancy = 0`.
 
-A pergunta:
+Na pergunta sobre os requisitos de **Horizon Forbidden West no PC**, as configurações `500/50` e `1000/100` obtiveram relevância igual a zero, enquanto o **Parent Retriever** obteve `0.946386`. Isso mostra que a estratégia child → parent conseguiu fornecer ao modelo um contexto mais adequado para essa consulta.
 
-``` text
+Na pergunta sobre **dados salvos e troféus de Resident Evil Revelations no PS3**, as três configurações obtiveram `Answer Relevancy = 0`, embora o `Faithfulness` tenha permanecido em `1.0`. Esse resultado indica que uma resposta pode estar apoiada no contexto recuperado e, ainda assim, não atender suficientemente ao foco da pergunta.
 
-Quais são os requisitos para jogar God of War Ragnarök no PC?
-```
-
-obteve `Answer Relevancy = 0` nas três configurações da avaliação.
-
-A resposta foi:
+Esses casos reforçam uma conclusão importante do projeto:
 
 ``` text
-
-Não encontrei informações suficientes nos documentos para responder.
-```
-
-Uma inspeção posterior mostrou que o PDF correto existia e era
-
-recuperado:
-
-``` text
-
-God of War Ragnarök para PC – Requisitos de sistema
-
-e recursos do PC _ PlayStation (Brasil).pdf
-```
-
-O problema era mais específico: os chunks retornados não traziam
-
-necessariamente a parte exata com os requisitos.
-
-Esse caso demonstra:
-
-``` text
-
 informação existir na base
-
-            ≠
-
+            ≠
 informação correta chegar ao LLM
+            ≠
+resposta necessariamente relevante
 ```
 
-Foi justamente esse problema que motivou os experimentos adicionais com
-
-maior quantidade de candidatos, reranking, BM25, expansão de consulta e
-
-recuperação híbrida.
+Por isso, o projeto mantém implementações de reranking, BM25 e recuperação híbrida para comparação e evolução futura.
 
 # 60. `analyze_evaluation.py`
 
@@ -3219,28 +3183,19 @@ output/resumo_avaliacao.csv
 
 # 61. Configuração final do RAG
 
-A configuração final selecionada foi:
+Com base na avaliação mais recente, a configuração selecionada para o fluxo final da aplicação foi o **Parent Retriever**, que apresentou o maior score geral (`0.8878`).
+
+O Parent Retriever utiliza recuperação em duas granularidades: chunks menores são utilizados para localizar semanticamente os trechos relevantes e, em seguida, os documentos parent correspondentes são recuperados para fornecer mais contexto ao LLM.
 
 ``` text
-
-Chunk size: 1000
-
-Chunk overlap: 100
-
-Search type: MMR
-
-k: 5
-
-fetch_k: 20
-
-VectorStore: Chroma
-
+Estratégia final: Parent Retriever
 LLM: gemma4:cloud
+Embeddings: nomic-embed-text
+VectorStore: Chroma
+Filtro por jogo: habilitado quando aplicável
 ```
 
-Parent Retriever, reranking e Hybrid Retriever permanecem como
-
-implementações funcionais e experimentais do projeto.
+As configurações `500/50` e `1000/100`, além de reranking e Hybrid Retriever, permanecem implementadas para testes, comparação e análise experimental.
 
 # 62. Integração com o Gradio
 
@@ -3749,11 +3704,11 @@ A comparação experimental produziu:
 
 ``` text
 
-Parent Retriever → 0.8866
+Parent Retriever → 0.8878
 
-1000/100         → 0.8838
+1000/100         → 0.7918
 
-500/50           → 0.7708
+500/50           → 0.6930
 ```
 
 Por isso, `Parent Retriever` apresentou o maior score geral na avaliação
@@ -3790,10 +3745,10 @@ organizados por jogo. Para adicionar um novo documento:
     padrão do projeto, por exemplo:
 
     ``` text
-    god_of_war_ragnarok
+    horizon_forbidden_west
     jedi_fallen_order
     red_dead_redemption_2
-    horizon_forbidden_west
+    residedent_evil_ps3
     ```
 
 4.  Preserve os metadados usados pelo pipeline:
@@ -3846,10 +3801,9 @@ A base do RAG utiliza PDFs reais relacionados aos jogos suportados. Cada
 documento mantém nos metadados os campos `source`, `file_name`, `game` e
 `page`, permitindo rastrear a origem da informação.
 
-Atualmente a base está organizada para os seguintes identificadores:
+Na execução final validada, a base contém 9 PDFs distribuídos entre os seguintes identificadores:
 
 ``` text
-god_of_war_ragnarok
 jedi_fallen_order
 red_dead_redemption_2
 horizon_forbidden_west
@@ -3863,13 +3817,6 @@ Exemplo de rastreabilidade já utilizada pelo sistema:
 
 ``` text
 arquivo.pdf — página 17
-```
-
-Um dos documentos analisados durante os testes foi:
-
-``` text
-God of War Ragnarök para PC – Requisitos de sistema
-e recursos do PC _ PlayStation (Brasil).pdf
 ```
 
 Para a entrega final, recomenda-se manter junto de cada PDF ou em uma
@@ -3902,9 +3849,9 @@ Resultados esperados da avaliação registrada neste checkpoint:
 
   Configuração         Faithfulness   Answer Relevancy   Score geral
   ------------------ -------------- ------------------ -------------
-  Parent Retriever           0.9867             0.7865        0.8866
-  1000/100                   0.9818             0.7859        0.8838
-  500/50                     0.8000             0.7415        0.7708
+  Parent Retriever           1.0000             0.7755        0.8878
+  1000/100                   1.0000             0.5837        0.7918
+  500/50                     0.8000             0.5859        0.6930
 
 Com base nesse experimento, `Parent Retriever` apresentou o maior score geral,
 seguido de perto pela configuração `1000/100`.

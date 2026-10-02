@@ -4,6 +4,7 @@ from app.documents import (
     carregar_documentos,
     criar_chunks,
 )
+
 from app.retriever import recuperar_documentos
 from app.reranker import reranquear_documentos
 from app.vectorstore import COLLECTION_1000
@@ -21,9 +22,11 @@ def expandir_pergunta(pergunta):
     com correspondência lexical.
 
     Exemplo:
+
     "requisitos para jogar no PC"
 
     também passa a considerar:
+
     "especificações", "GPU", "CPU", "RAM", etc.
     """
 
@@ -349,8 +352,11 @@ def mostrar_documentos(documentos):
     """
 
     print("\n")
+
     print("=" * 70)
+
     print("RESULTADO HYBRID RETRIEVER")
+
     print("=" * 70)
 
     for i, documento in enumerate(
@@ -366,7 +372,7 @@ def mostrar_documentos(documentos):
         print(
             "Score reranker:",
             documento.metadata.get(
-                "reranker_score",
+                "rerank_score",
                 "Não informado",
             ),
         )
@@ -417,9 +423,9 @@ def mostrar_documentos(documentos):
 
 
 if __name__ == "__main__":
-    pergunta = "Quais são os requisitos para jogar " "God of War Ragnarök no PC?"
+    pergunta = "Quais são os requisitos para jogar " "Horizon Forbidden West no PC?"
 
-    game = "god_of_war_ragnarok"
+    game = "horizon_forbidden_west"
 
     print("\nPergunta:")
     print(pergunta)
