@@ -1,78 +1,99 @@
+# app/documents.py
+
 from pathlib import Path
 
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# ============================================================
+# CONFIGURAÇÕES
+# ============================================================
 
 DATA_DIR = Path("data")
 
 
-def descobrir_pdfs(data_dir=DATA_DIR):
-    """
-    Procura todos os arquivos PDF dentro da pasta data
-    e de suas subpastas.
-    """
-    pdfs = list(data_dir.rglob("*.pdf"))
-
-    return pdfs
+# ============================================================
+# IDENTIFICAR JOGO PELO DIRETÓRIO
+# ============================================================
 
 
-def obter_nome_jogo(caminho_pdf):
+def identificar_jogo(caminho):
     """
-    Obtém o nome do jogo a partir da pasta onde
-    o PDF está armazenado.
+    Identifica o jogo a partir da pasta em que o PDF está.
 
     Exemplo:
+
     data/god_of_war_ragnarok/arquivo.pdf
 
-    Retorna:
+    retorna:
+
     god_of_war_ragnarok
     """
-    return caminho_pdf.parent.name
+
+    try:
+        caminho_relativo = caminho.relative_to(DATA_DIR)
+
+        return caminho_relativo.parts[0]
+
+    except (ValueError, IndexError):
+        return "desconhecido"
 
 
-def carregar_documentos(data_dir=DATA_DIR):
+# ============================================================
+# CARREGAR DOCUMENTOS
+# ============================================================
+
+
+def carregar_documentos():
     """
-    Carrega todos os PDFs encontrados dentro da pasta data.
+    Carrega todos os arquivos PDF existentes dentro
+    do diretório data e de seus subdiretórios.
 
-    Cada página válida é transformada em um Document.
+    Cada página carregada recebe metadados adicionais:
 
-    Páginas sem conteúdo textual são ignoradas.
+    - game
+    - file_name
+    - source
+
+    O número da página já é fornecido pelo PyMuPDFLoader.
     """
-
-    pdfs = descobrir_pdfs(data_dir)
-
-    print(f"PDFs encontrados: {len(pdfs)}")
 
     documentos = []
 
-    for caminho_pdf in pdfs:
+    arquivos_pdf = list(DATA_DIR.rglob("*.pdf"))
+
+    print(f"PDFs encontrados: {len(arquivos_pdf)}")
+
+    for caminho_pdf in arquivos_pdf:
+
         print(f"Carregando: {caminho_pdf}")
 
-        loader = PyPDFLoader(str(caminho_pdf))
+        jogo = identificar_jogo(caminho_pdf)
+
+        loader = PyMuPDFLoader(str(caminho_pdf))
 
         paginas = loader.load()
 
-        jogo = obter_nome_jogo(caminho_pdf)
-
         for pagina in paginas:
-            # Remove espaços antes e depois do conteúdo
-            conteudo = pagina.page_content.strip()
 
-            # Ignora páginas completamente vazias
-            if not conteudo:
+            # Ignora páginas completamente vazias.
+            if not pagina.page_content.strip():
                 continue
 
-            # Mantém o conteúdo já limpo
-            pagina.page_content = conteudo
-
-            # Adiciona metadados utilizados pelo RAG
             pagina.metadata["game"] = jogo
+
             pagina.metadata["file_name"] = caminho_pdf.name
+
             pagina.metadata["source"] = str(caminho_pdf)
 
             documentos.append(pagina)
 
     return documentos
+
+
+# ============================================================
+# CRIAR CHUNKS
+# ============================================================
 
 
 def criar_chunks(
@@ -81,23 +102,48 @@ def criar_chunks(
     chunk_overlap=50,
 ):
     """
-    Divide os documentos em chunks.
+    Divide os documentos em chunks utilizando
+    RecursiveCharacterTextSplitter.
 
     Parâmetros:
+
     documentos:
-        Lista de documentos carregados.
+        lista de documentos carregados.
 
     chunk_size:
-        Tamanho máximo de cada chunk.
+        tamanho máximo aproximado de cada chunk.
 
     chunk_overlap:
-        Quantidade de caracteres compartilhados
-        entre chunks consecutivos.
+        quantidade de caracteres compartilhados entre
+        chunks consecutivos.
+
+    separators:
+        define a prioridade utilizada pelo splitter
+        para encontrar pontos adequados de divisão.
+
+        A ordem utilizada é:
+
+        1. "\\n\\n" -> parágrafos
+        2. "\\n"   -> quebras de linha
+        3. ". "    -> final de frases
+        4. " "     -> palavras
+        5. ""      -> caracteres, como último recurso
+
+    Dessa forma, o splitter tenta preservar primeiro
+    estruturas semanticamente maiores antes de realizar
+    cortes menores no texto.
     """
 
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
+        separators=[
+            "\n\n",
+            "\n",
+            ". ",
+            " ",
+            "",
+        ],
     )
 
     chunks = splitter.split_documents(documentos)
@@ -105,39 +151,44 @@ def criar_chunks(
     return chunks
 
 
-def mostrar_resumo(documentos):
+# ============================================================
+# EXIBIR EXEMPLOS DE CHUNKS
+# ============================================================
+
+
+def mostrar_chunks(
+    chunks,
+    quantidade=5,
+):
     """
-    Mostra informações básicas dos documentos carregados.
+    Exibe alguns chunks para facilitar a validação
+    do processo de divisão dos documentos.
     """
 
-    documentos_vazios = 0
+    print(f"\nTotal de chunks: {len(chunks)}")
 
-    for documento in documentos:
-        if not documento.page_content.strip():
-            documentos_vazios += 1
+    limite = min(
+        quantidade,
+        len(chunks),
+    )
 
-    print("\n" + "=" * 70)
-    print("RESUMO")
-    print("=" * 70)
+    for i in range(limite):
 
-    print(f"Total de documentos válidos: {len(documentos)}")
-    print(f"Documentos vazios: {documentos_vazios}")
-
-    if documentos:
-        documento = documentos[0]
+        chunk = chunks[i]
 
         print("\n" + "=" * 70)
-        print("EXEMPLO DE DOCUMENTO")
+
+        print(f"CHUNK {i + 1}")
+
         print("=" * 70)
 
-        print("\nCONTEÚDO:")
-        print(documento.page_content)
+        print(chunk.page_content)
 
         print("\nMETADADOS:")
 
         print(
             "Jogo:",
-            documento.metadata.get(
+            chunk.metadata.get(
                 "game",
                 "Não informado",
             ),
@@ -145,29 +196,80 @@ def mostrar_resumo(documentos):
 
         print(
             "Arquivo:",
-            documento.metadata.get(
+            chunk.metadata.get(
                 "file_name",
                 "Não informado",
             ),
         )
 
-        pagina = documento.metadata.get("page")
+        pagina = chunk.metadata.get("page")
 
         if pagina is not None:
             print(f"Página: {pagina + 1}")
+
         else:
             print("Página: Não informada")
 
         print(
             "Fonte:",
-            documento.metadata.get(
+            chunk.metadata.get(
                 "source",
                 "Não informada",
             ),
         )
 
 
+# ============================================================
+# TESTE
+# ============================================================
+
+
 if __name__ == "__main__":
+
+    # ========================================================
+    # LOAD
+    # ========================================================
+
     documentos = carregar_documentos()
 
-    mostrar_resumo(documentos)
+    print(f"\nTotal de documentos/páginas carregados: " f"{len(documentos)}")
+
+    # ========================================================
+    # CONFIGURAÇÃO 500/50
+    # ========================================================
+
+    chunks_500 = criar_chunks(
+        documentos=documentos,
+        chunk_size=500,
+        chunk_overlap=50,
+    )
+
+    print("\n")
+    print("=" * 70)
+    print("CONFIGURAÇÃO 500/50")
+    print("=" * 70)
+
+    mostrar_chunks(
+        chunks=chunks_500,
+        quantidade=5,
+    )
+
+    # ========================================================
+    # CONFIGURAÇÃO 1000/100
+    # ========================================================
+
+    chunks_1000 = criar_chunks(
+        documentos=documentos,
+        chunk_size=1000,
+        chunk_overlap=100,
+    )
+
+    print("\n")
+    print("=" * 70)
+    print("CONFIGURAÇÃO 1000/100")
+    print("=" * 70)
+
+    mostrar_chunks(
+        chunks=chunks_1000,
+        quantidade=5,
+    )

@@ -2,9 +2,9 @@ META PROMPTING - COMPARAÇÃO
 ===========================
 
 Tokens do prompt original: 3124
-Tokens do prompt melhorado: 2651
-Diferença: -473 tokens
-Variação percentual: -15.14%
+Tokens do prompt melhorado: 2393
+Diferença: -731 tokens
+Variação percentual: -23.40%
 
 VERIFICAÇÃO DAS SEÇÕES
 ======================
