@@ -3049,11 +3049,11 @@ Médias finais:
 
   ------------------ --------------
 
-  500/50                     1.0000
+  500/50                     0.8000
 
-  1000/100                   1.0000
+  1000/100                   0.9818
 
-  Parent Retriever           0.9875
+  Parent Retriever           0.9867
 
 # 56. Answer Relevancy
 
@@ -3072,11 +3072,11 @@ Médias finais:
 
   ------------------ ------------------
 
-  500/50                         0.7531
+  500/50                         0.7415
 
-  1000/100                       0.7923
+  1000/100                       0.7859
 
-  Parent Retriever               0.7861
+  Parent Retriever               0.7865
 
 # 57. Dataset de avaliação
 
@@ -3108,11 +3108,11 @@ Como cada pergunta foi executada em três configurações:
 
   ------------------ -------------- ------------------ -------------
 
-  1000/100                   1.0000             0.7923        0.8962
+  Parent Retriever           0.9867             0.7865        0.8866
 
-  Parent Retriever           0.9875             0.7861        0.8868
+  1000/100                   0.9818             0.7859        0.8838
 
-  500/50                     1.0000             0.7531        0.8766
+  500/50                     0.8000             0.7415        0.7708
 
 O score geral utilizado na análise é:
 
@@ -3125,15 +3125,14 @@ Ranking:
 
 ``` text
 
-1º 1000/100         0.8962
+1º Parent Retriever 0.8866
 
-2º Parent Retriever 0.8868
+2º 1000/100         0.8838
 
-3º 500/50           0.8766
+3º 500/50           0.7708
 ```
 
-Por isso, \*\*\*\*1000/100 foi selecionado como configuração
-final\*\*\*\*.
+Por isso, \*\*\*\*Parent Retriever foi identificado como a configuração com maior score geral no experimento\*\*\*\*.
 
 A escolha é válida para o experimento realizado; ela não significa que
 
@@ -3750,16 +3749,16 @@ A comparação experimental produziu:
 
 ``` text
 
-1000/100         → 0.8962
+Parent Retriever → 0.8866
 
-Parent Retriever → 0.8868
+1000/100         → 0.8838
 
-500/50           → 0.8766
+500/50           → 0.7708
 ```
 
-Por isso, `1000/100` foi adotado como configuração principal do RAG
+Por isso, `Parent Retriever` apresentou o maior score geral na avaliação
 
-final.
+experimental.
 
 O projeto também registrou um caso real em que o documento correto
 
@@ -3903,12 +3902,12 @@ Resultados esperados da avaliação registrada neste checkpoint:
 
   Configuração         Faithfulness   Answer Relevancy   Score geral
   ------------------ -------------- ------------------ -------------
-  1000/100                   1.0000             0.7923        0.8962
-  Parent Retriever           0.9875             0.7861        0.8868
-  500/50                     1.0000             0.7531        0.8766
+  Parent Retriever           0.9867             0.7865        0.8866
+  1000/100                   0.9818             0.7859        0.8838
+  500/50                     0.8000             0.7415        0.7708
 
-Com base nesse experimento, `1000/100` foi selecionado como configuração
-principal do RAG final.
+Com base nesse experimento, `Parent Retriever` apresentou o maior score geral,
+seguido de perto pela configuração `1000/100`.
 
 # 74. Checklist final dos requisitos
 

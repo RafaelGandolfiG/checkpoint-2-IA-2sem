@@ -196,27 +196,33 @@ def buscar_parent(
 # ============================================================
 # RAG FINAL
 #
-# A configuração 1000/100 foi escolhida como configuração
-# final após a avaliação com RAGAS.
+# A avaliação com RAGAS apresentou desempenho muito próximo
+# entre o Parent Retriever e a configuração 1000/100.
 #
 # Resultados:
 #
-# 1000/100:
-# Faithfulness      = 1.0000
-# Answer Relevancy  = 0.7923
-# Score geral       = 0.8962
-#
 # Parent Retriever:
-# Faithfulness      = 0.9875
-# Answer Relevancy  = 0.7861
-# Score geral       = 0.8868
+# Faithfulness      = 0.9867
+# Answer Relevancy  = 0.7865
+# Score geral       = 0.8866
+#
+# 1000/100:
+# Faithfulness      = 0.9818
+# Answer Relevancy  = 0.7859
+# Score geral       = 0.8838
 #
 # 500/50:
-# Faithfulness      = 1.0000
-# Answer Relevancy  = 0.7531
-# Score geral       = 0.8766
+# Faithfulness      = 0.8000
+# Answer Relevancy  = 0.7415
+# Score geral       = 0.7708
+#
+# Apesar de o Parent Retriever apresentar o maior score geral,
+# a diferença para 1000/100 foi de apenas 0.0028.
+#
+# A configuração 1000/100 foi mantida como pipeline final por
+# apresentar desempenho praticamente equivalente com uma
+# arquitetura mais simples para a aplicação.
 # ============================================================
-
 
 def buscar(
     consulta,
